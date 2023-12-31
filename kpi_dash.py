@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
 
 
 # Load the dataset
@@ -51,3 +52,20 @@ col1.metric("TY Sales", f"${ty_sales:,.2f}", f"{sales_change:.2f}%")
 col2.metric("TY Profit", f"${ty_profit:,.2f}", f"{profit_change:.2f}%")
 col3.metric("TY Quantity", f"{ty_quantity}", f"{quantity_change:.2f}%")
 col4.metric("TY Profit %", f"{ty_profit_margin:.2f}%", f"{profit_margin_change:.2f}%")
+
+# Function to prepare data for the YoY chart
+def prepare_chart_data(filtered_data, kpi):
+    # Grouping by month and year
+    monthly_data = filtered_data.groupby([filtered_data['Order Date'].dt.year, filtered_data['Order Date'].dt.month])[kpi].sum().reset_index()
+    monthly_data.columns = ['Year', 'Month', kpi]
+    return monthly_data
+
+# KPI selection for the chart
+selected_kpi = st.selectbox("Select KPI for YoY Trend Chart", ["Sales", "Profit", "Quantity"])
+
+# Prepare data for the selected KPI
+chart_data = prepare_chart_data(filtered_data, selected_kpi)
+
+# Create and display the YoY trend chart
+fig = px.line(chart_data, x="Month", y=selected_kpi, color='Year', title=f'YoY {selected_kpi} Trend')
+st.plotly_chart(fig)
