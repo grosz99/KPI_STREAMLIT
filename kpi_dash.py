@@ -14,8 +14,8 @@ st.title("KPI Dashboard")
 # Filters
 st.sidebar.header("Filters")
 selected_country = st.sidebar.selectbox("Country", data['Country'].unique())
-selected_city = st.sidebar.selectbox("City", data[data['Country'] == selected_country]['City'].unique())
-selected_state = st.sidebar.selectbox("State", data[data['City'] == selected_city]['State'].unique())
+selected_states = st.sidebar.multiselect("State", data[data['Country'] == selected_country]['State'].unique())
+selected_cities = st.sidebar.multiselect("City", data[data['State'].isin(selected_states)]['City'].unique())
 
 # Filtered data based on user selection
-filtered_data = data[(data['Country'] == selected_country) & (data['City'] == selected_city) & (data['State'] == selected_state)]
+filtered_data = d
