@@ -55,9 +55,12 @@ col4.metric("TY Profit %", f"{ty_profit_margin:.2f}%", f"{profit_margin_change:.
 
 # Function to prepare data for the YoY chart
 def prepare_chart_data(filtered_data, kpi):
+    # Extract year and month from 'Order Date'
+    filtered_data['Year'] = filtered_data['Order Date'].dt.year
+    filtered_data['Month'] = filtered_data['Order Date'].dt.month
+
     # Grouping by month and year
-    monthly_data = filtered_data.groupby([filtered_data['Order Date'].dt.year, filtered_data['Order Date'].dt.month])[kpi].sum().reset_index()
-    monthly_data.columns = ['Year', 'Month', kpi]
+    monthly_data = filtered_data.groupby(['Year', 'Month'])[kpi].sum().reset_index()
     return monthly_data
 
 # KPI selection for the chart
