@@ -18,4 +18,4 @@ selected_states = st.sidebar.multiselect("State", data[data['Country'] == select
 selected_cities = st.sidebar.multiselect("City", data[data['State'].isin(selected_states)]['City'].unique())
 
 # Filtered data based on user selection
-filtered_data = d
+filtered_data = data[(data['Country'] == selected_country) & (data['State'].isin(selected_states)) & (data['City'].isin(selected_cities))]
