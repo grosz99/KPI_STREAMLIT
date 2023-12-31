@@ -7,21 +7,20 @@ import numpy as np
 data_url = "https://raw.githubusercontent.com/grosz99/KPI_STREAMLIT/main/Sample_Superstore_Streamlit_Proper.csv"
 data = pd.read_csv(data_url)
 
+# Convert 'Order Date' to datetime
+data['Order Date'] = pd.to_datetime(data['Order Date'])
 
 # Streamlit app setup
 st.title("KPI Dashboard")
 
-
 # Filters
 st.sidebar.header("Filters")
 selected_country = st.sidebar.selectbox("Country", data['Country'].unique())
+states_in_country = data[data['Country'] == selected_country]['State'].unique()
+cities_in_country = data[data['Country'] == selected_country]['City'].unique()
 
-# Default to all states and cities for the selected country
-default_states = data[data['Country'] == selected_country]['State'].unique()
-default_cities = data[data['Country'] == selected_country]['City'].unique()
-
-selected_states = st.sidebar.multiselect("State", default_states, default=default_states)
-selected_cities = st.sidebar.multiselect("City", default_cities, default=default_cities)
+selected_states = st.sidebar.multiselect("State", states_in_country, default=list(states_in_country))
+selected_cities = st.sidebar.multiselect("City", cities_in_country, default=list(cities_in_country))
 
 # Filtered data based on user selection
 filtered_data = data[(data['Country'] == selected_country) & (data['State'].isin(selected_states)) & (data['City'].isin(selected_cities))]
